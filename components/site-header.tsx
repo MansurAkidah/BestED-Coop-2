@@ -4,9 +4,10 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Menu, GraduationCap } from "lucide-react"
+import { Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
+import Image from "next/image"
 
 const nav = [
   { href: "/", label: "Home" },
@@ -22,7 +23,7 @@ export function SiteHeader() {
     <header className="w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <img 
+          <Image 
             src="https://best-ed.vercel.app/assets/img/edlogo.png" 
             alt="BestED Logo" 
             className="h-8 w-8 object-contain"

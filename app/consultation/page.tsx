@@ -1,12 +1,11 @@
 "use client"
 
-import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Check, Calendar, Users, Globe2, BookOpen } from "lucide-react"
+import { Check, Calendar, Users, Globe2 } from "lucide-react"
 import { useState } from "react"
 
 const subjects = [
@@ -43,7 +42,7 @@ export default function ConsultationPage() {
               <Badge className="bg-emerald-600 hover:bg-emerald-700">Book Consultation</Badge>
               <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Book Your Consultation</h1>
               <p className="mt-3 text-muted-foreground text-lg">
-                Tell us about your learning goals, availability, and preferences. We'll create a personalized learning plan tailored to your needs.
+                Tell us about your learning goals, availability, and preferences. We&apos;ll create a personalized learning plan tailored to your needs.
               </p>
             </div>
           </div>
@@ -313,7 +312,7 @@ export default function ConsultationPage() {
                   <CardContent className="space-y-3 text-sm">
                     <div className="flex items-start gap-2">
                       <Check className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                      <span>We'll review your consultation request within 12 hours</span>
+                      <span>We&apos;ll review your consultation request within 12 hours</span>
                     </div>
                     <div className="flex items-start gap-2">
                       <Check className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
