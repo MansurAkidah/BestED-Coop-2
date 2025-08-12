@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Check, Calendar, Users, Globe2 } from "lucide-react"
 import { useState } from "react"
-import { Resend } from 'resend'
 import emailjs from '@emailjs/browser';
 
 const subjects = [
@@ -134,7 +133,8 @@ export default function ConsultationPage() {
           </div>
         </div>
       `;
-const templateParams = {}
+
+      
       // Send email using EmailJS
       await emailjs.send(
         "service_k4dwqon",
@@ -478,7 +478,7 @@ const templateParams = {}
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700">
+                    <Button type="submit" disabled={isSubmitting} className="w-full bg-emerald-600 hover:bg-emerald-700">
                       Submit Consultation Request
                     </Button>
                   </form>
