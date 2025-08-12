@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Check, Calendar, Users, Globe2 } from "lucide-react"
 import { useState } from "react"
+import { Resend } from 'resend'
+import emailjs from '@emailjs/browser';
 
 const subjects = [
   { id: "english", name: "English", icon: "🇬🇧" },
@@ -21,7 +23,30 @@ const subjects = [
 
 export default function ConsultationPage() {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    level: '',
+    goals: '',
+    deliveryMode: '',
+    groupSize: 'individual',
+    availability: '',
+    experience: '',
+    specialNeeds: ''
+  })
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
   const toggleSubject = (subjectId: string) => {
     setSelectedSubjects(prev => 
       prev.includes(subjectId) 
@@ -30,7 +55,141 @@ export default function ConsultationPage() {
     )
   }
 
-  return (
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    
+    // Validate required fields
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.goals || !formData.deliveryMode || !formData.availability) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    
+    if (selectedSubjects.length === 0) {
+      alert('Please select at least one subject.');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      
+      // Get subject names for display
+      const selectedSubjectNames = selectedSubjects.map(id => 
+        subjects.find(subject => subject.id === id)?.name
+      ).filter(Boolean).join(', ');
+
+      // Create comprehensive email content
+      const emailContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #059669; border-bottom: 2px solid #059669; padding-bottom: 10px;">
+            New Consultation Request
+          </h2>
+          
+          <div style="background-color: #f0fdf4; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #065f46; margin-top: 0;">Personal Information</h3>
+            <p><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
+            <p><strong>Email:</strong> ${formData.email}</p>
+            <p><strong>Phone:</strong> ${formData.phone || 'Not provided'}</p>
+          </div>
+
+          <div style="background-color: #ecfdf5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #065f46; margin-top: 0;">Learning Goals</h3>
+            <p><strong>Subjects of Interest:</strong> ${selectedSubjectNames}</p>
+            <p><strong>Current Level:</strong> ${formData.level || 'Not specified'}</p>
+            <p><strong>Learning Goals:</strong></p>
+            <div style="background-color: white; padding: 10px; border-radius: 4px; margin-top: 5px;">
+              ${formData.goals.replace(/\n/g, '<br>')}
+            </div>
+          </div>
+
+          <div style="background-color: #f0fdf4; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #065f46; margin-top: 0;">Learning Preferences</h3>
+            <p><strong>Preferred Delivery Mode:</strong> ${formData.deliveryMode.charAt(0).toUpperCase() + formData.deliveryMode.slice(1)}</p>
+            <p><strong>Group Size Preference:</strong> ${formData.groupSize.charAt(0).toUpperCase() + formData.groupSize.slice(1).replace('-', ' ')}</p>
+            <p><strong>Preferred Schedule:</strong></p>
+            <div style="background-color: white; padding: 10px; border-radius: 4px; margin-top: 5px;">
+              ${formData.availability.replace(/\n/g, '<br>')}
+            </div>
+          </div>
+
+          ${formData.experience || formData.specialNeeds ? `
+          <div style="background-color: #ecfdf5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #065f46; margin-top: 0;">Additional Information</h3>
+            ${formData.experience ? `
+              <p><strong>Previous Learning Experience:</strong></p>
+              <div style="background-color: white; padding: 10px; border-radius: 4px; margin-top: 5px; margin-bottom: 15px;">
+                ${formData.experience.replace(/\n/g, '<br>')}
+              </div>
+            ` : ''}
+            ${formData.specialNeeds ? `
+              <p><strong>Special Requirements:</strong></p>
+              <div style="background-color: white; padding: 10px; border-radius: 4px; margin-top: 5px;">
+                ${formData.specialNeeds.replace(/\n/g, '<br>')}
+              </div>
+            ` : ''}
+          </div>
+          ` : ''}
+
+          <div style="background-color: #065f46; color: white; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <p style="margin: 0;"><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+          </div>
+        </div>
+      `;
+const templateParams = {}
+      // Send email using EmailJS
+      await emailjs.send(
+        "service_k4dwqon",
+        "template_2y5bwed",
+        {
+          to_name: 'BestED Team',
+          from_name: `${formData.firstName} ${formData.lastName}`,
+          from_email: formData.email,
+          subject: `New Consultation Request - ${formData.firstName} ${formData.lastName}`,
+          message: emailContent,
+          // Individual form fields for template customization
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone || 'Not provided',
+          subjects: selectedSubjectNames,
+          level: formData.level || 'Not specified',
+          goals: formData.goals,
+          delivery_mode: formData.deliveryMode,
+          group_size: formData.groupSize,
+          availability: formData.availability,
+          experience: formData.experience || 'Not provided',
+          special_needs: formData.specialNeeds || 'None',
+          submission_date: new Date().toLocaleString()
+        },
+        "gn6RCJ7AimpPDC8qL"
+      );
+
+      alert('Form submitted successfully! We will contact you within 12 hours.');
+      
+      // Reset form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        level: '',
+        goals: '',
+        deliveryMode: '',
+        groupSize: 'individual',
+        availability: '',
+        experience: '',
+        specialNeeds: ''
+      });
+      setSelectedSubjects([]);
+      
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('Failed to submit form. Please try again or contact us directly.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+        return (
     <div className="flex min-h-[100dvh] flex-col">
       <SiteHeader />
       <main className="flex-1">
@@ -58,7 +217,7 @@ export default function ConsultationPage() {
                   <CardTitle className="text-2xl">Consultation Request Form</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <form className="space-y-6">
+                  <form className="space-y-6" onSubmit={handleSubmit}>
                     {/* Personal Information */}
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold">Personal Information</h3>
@@ -71,6 +230,8 @@ export default function ConsultationPage() {
                             type="text"
                             id="firstName"
                             name="firstName"
+                            value={formData.firstName}
+                            onChange={handleInputChange}
                             required
                             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                           />
@@ -83,6 +244,8 @@ export default function ConsultationPage() {
                             type="text"
                             id="lastName"
                             name="lastName"
+                            value={formData.lastName}
+                            onChange={handleInputChange}
                             required
                             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                           />
@@ -97,6 +260,8 @@ export default function ConsultationPage() {
                             type="email"
                             id="email"
                             name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
                             required
                             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                           />
@@ -109,6 +274,8 @@ export default function ConsultationPage() {
                             type="tel"
                             id="phone"
                             name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
                             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                           />
                         </div>
@@ -169,6 +336,8 @@ export default function ConsultationPage() {
                         <select
                           id="level"
                           name="level"
+                          value={formData.level}
+                          onChange={handleInputChange}
                           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           <option value="">Select your level</option>
@@ -188,6 +357,8 @@ export default function ConsultationPage() {
                           id="goals"
                           name="goals"
                           rows={3}
+                          value={formData.goals}
+                          onChange={handleInputChange}
                           required
                           placeholder="Describe your learning objectives, timeline, and specific goals..."
                           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -208,6 +379,8 @@ export default function ConsultationPage() {
                               type="radio"
                               name="deliveryMode"
                               value="in-person"
+                              checked={formData.deliveryMode === 'in-person'}
+                              onChange={handleInputChange}
                               required
                               className="rounded-full border-gray-300 text-emerald-600 focus:ring-emerald-500"
                             />
@@ -218,6 +391,8 @@ export default function ConsultationPage() {
                               type="radio"
                               name="deliveryMode"
                               value="online"
+                              checked={formData.deliveryMode === 'online'}
+                              onChange={handleInputChange}
                               required
                               className="rounded-full border-gray-300 text-emerald-600 focus:ring-emerald-500"
                             />
@@ -228,6 +403,8 @@ export default function ConsultationPage() {
                               type="radio"
                               name="deliveryMode"
                               value="hybrid"
+                              checked={formData.deliveryMode === 'hybrid'}
+                              onChange={handleInputChange}
                               required
                               className="rounded-full border-gray-300 text-emerald-600 focus:ring-emerald-500"
                             />
@@ -242,6 +419,8 @@ export default function ConsultationPage() {
                         <select
                           id="groupSize"
                           name="groupSize"
+                          value={formData.groupSize}
+                          onChange={handleInputChange}
                           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           <option value="individual">Individual (1-on-1)</option>
@@ -257,6 +436,8 @@ export default function ConsultationPage() {
                           id="availability"
                           name="availability"
                           rows={2}
+                          value={formData.availability}
+                          onChange={handleInputChange}
                           required
                           placeholder="Tell us about your preferred days, times, and frequency..."
                           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -275,6 +456,8 @@ export default function ConsultationPage() {
                           id="experience"
                           name="experience"
                           rows={2}
+                          value={formData.experience}
+                          onChange={handleInputChange}
                           placeholder="Share any previous language learning, tutoring, or educational background..."
                           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         />
@@ -287,6 +470,8 @@ export default function ConsultationPage() {
                           id="specialNeeds"
                           name="specialNeeds"
                           rows={2}
+                          value={formData.specialNeeds}
+                          onChange={handleInputChange}
                           placeholder="Any specific needs, accommodations, or special considerations..."
                           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         />

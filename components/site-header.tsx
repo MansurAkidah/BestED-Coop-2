@@ -26,6 +26,8 @@ export function SiteHeader() {
           <Image 
             src="https://best-ed.vercel.app/assets/img/edlogo.png" 
             alt="BestED Logo" 
+            width={100}
+            height={100}
             className="h-8 w-8 object-contain"
           />
           <span className="text-lg font-semibold tracking-tight">BestED</span>
