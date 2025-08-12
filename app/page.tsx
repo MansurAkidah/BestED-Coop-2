@@ -8,9 +8,11 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 
 export const metadata = {
-  title: "BestED | Personalized Language, Math & Science Coaching",
+  title: "BestED | Experience Professional Homeschooling",
   description:
     "BestED delivers corporate-grade, individualized learning—on-site or online. Languages, Math, and Science, from foundational to advanced.",
+  keywords:
+    "homeschooling, education, online learning, professional teaching, home education, personalized learning, curriculum, academic excellence",
 }
 
 export default function Page() {
