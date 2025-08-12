@@ -29,7 +29,7 @@ export default function Page() {
                   Learn without limits—on-site or online with BestED
                 </h1>
                 <p className="text-muted-foreground text-lg">
-                  Personalized coaching in foreign languages, Math, and Science for learners from age 10 to adults.
+                  Personalized coaching in foreign languages, Math, and Science for learners from age 6 to adults.
                   Flexible delivery designed for professionals, families, and individuals everywhere.
                 </p>
                 <div className="flex flex-col gap-3 sm:flex-row">
@@ -52,48 +52,48 @@ export default function Page() {
                   </li>
                 </ul>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 sm:gap-4 grid-cols-2">
                 <Card>
-                  <CardContent className="p-3">
+                  <CardContent className="p-2 sm:p-3">
                     <Image
                       src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=420&h=280&fit=crop&crop=center"
                       alt="Teacher guiding kids in a modern classroom"
                       width={420}
                       height={280}
-                      className="rounded-md object-cover"
+                      className="rounded-md object-cover w-full h-32 sm:h-auto"
                     />
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardContent className="p-3">
+                  <CardContent className="p-2 sm:p-3">
                     <Image
                       src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=420&h=280&fit=crop&crop=center"
                       alt="Adult professional engaging in online learning via video call"
                       width={420}
                       height={280}
-                      className="rounded-md object-cover"
+                      className="rounded-md object-cover w-full h-32 sm:h-auto"
                     />
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardContent className="p-3">
+                  <CardContent className="p-2 sm:p-3">
                     <Image
                       src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=420&h=280&fit=crop&crop=center"
                       alt="Teen student in a language lesson with a teacher"
                       width={420}
                       height={280}
-                      className="rounded-md object-cover"
+                      className="rounded-md object-cover w-full h-32 sm:h-auto"
                     />
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardContent className="p-3">
+                  <CardContent className="p-2 sm:p-3">
                     <Image
                       src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=420&h=280&fit=crop&crop=center"
                       alt="Diverse adult learners studying together"
                       width={420}
                       height={280}
-                      className="rounded-md object-cover"
+                      className="rounded-md object-cover w-full h-32 sm:h-auto"
                     />
                   </CardContent>
                 </Card>

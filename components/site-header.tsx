@@ -22,7 +22,11 @@ export function SiteHeader() {
     <header className="w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <GraduationCap className="h-6 w-6 text-emerald-600" aria-hidden="true" />
+          <img 
+            src="https://best-ed.vercel.app/assets/img/edlogo.png" 
+            alt="BestED Logo" 
+            className="h-8 w-8 object-contain"
+          />
           <span className="text-lg font-semibold tracking-tight">BestED</span>
         </Link>
 

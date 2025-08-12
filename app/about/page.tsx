@@ -20,7 +20,7 @@ export default function AboutPage() {
               <div>
                 <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">About BestED</h1>
                 <p className="mt-4 text-muted-foreground text-lg">
-                  BestED is a corporate-focused, individualized learning partner. We support learners from age 10 to
+                  BestED is a corporate-focused, individualized learning partner. We support learners from age 6 to
                   adults through flexible, high-impact instruction in languages, Math, and Science—delivered in-person
                   or online.
                 </p>
