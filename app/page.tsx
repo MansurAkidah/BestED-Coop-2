@@ -152,10 +152,10 @@ export default function Page() {
                 Personalized pathways from foundations to fluency and academic excellence.
               </p>
             </div>
-            <div className="mt-8 grid gap-3 sm:gap-4 grid-cols-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 grid gap-3 sm:gap-4 grid-cols-4 sm:grid-cols-2 lg:grid-cols-8">
               {[
                 { name: "English", icon: "🇬🇧" },
-                { name: "Kiswahili", icon: "🇹🇿" },
+                { name: "Arabic", icon: "🇸🇦" },
                 { name: "German", icon: "🇩🇪" },
                 { name: "French", icon: "🇫🇷" },
                 { name: "Chinese", icon: "🇨🇳" },

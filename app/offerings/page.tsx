@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Check, School, Landmark, Globe2 } from "lucide-react"
+import  LevelGrid from "./LevelGrid"
 
 export const metadata = {
   title: "BestED Offerings | Languages, Math & Science, Exam Prep",
@@ -54,7 +55,32 @@ const languages = [
   },
 ]
 
-const levels = ["A1", "A2", "B1", "B2", "C1", "C2"]
+const levels = [
+  {
+    name: "A1",
+    description: "Beginner: Can understand and use familiar everyday expressions and very basic phrases. Can introduce themselves and ask/answer simple questions."
+  },
+  {
+    name: "A2",
+    description: "Elementary: Can communicate in simple and routine tasks requiring a direct exchange of information. Can describe in simple terms aspects of their background."
+  },
+  {
+    name: "B1",
+    description: "Intermediate: Can deal with most situations likely to arise while traveling. Can produce simple connected text on familiar topics."
+  },
+  {
+    name: "B2",
+    description: "Upper Intermediate: Can interact with a degree of fluency and spontaneity. Can produce clear, detailed text on a wide range of subjects."
+  },
+  {
+    name: "C1",
+    description: "Advanced: Can express ideas fluently and spontaneously. Can use language flexibly and effectively for social, academic, and professional purposes."
+  },
+  {
+    name: "C2",
+    description: "Proficient: Can understand with ease virtually everything heard or read. Can express themselves spontaneously, very fluently and precisely."
+  },
+]
 
 export default function OfferingsPage() {
   return (
@@ -118,22 +144,14 @@ export default function OfferingsPage() {
           </p>
         </section>
 
-        {/* CEFR levels */}
+        {/* CEFR levels with popup descriptions */}
         <section className="border-t bg-muted/30">
           <div className="container mx-auto px-4 py-12 md:py-16">
             <h2 className="text-2xl font-semibold">CEFR-aligned coaching</h2>
             <p className="mt-2 text-muted-foreground">
               Structured progression with personalized pacing from beginner to mastery.
             </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              {levels.map((lv) => (
-                <Card key={lv} className="border-emerald-100">
-                  <CardContent className="flex items-center justify-center p-6">
-                    <span className="text-lg font-semibold">{lv}</span>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <LevelGrid levels={levels} />
           </div>
         </section>
 

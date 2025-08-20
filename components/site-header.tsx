@@ -14,6 +14,8 @@ const nav = [
   { href: "/offerings", label: "What we offer" },
   { href: "/about", label: "About" },
   { href: "/consultation", label: "Book Consultation" },
+  { href: "/profiles", label: "Instructors" },
+  { href: "/contact", label: "Contact" }
 ]
 
 export function SiteHeader() {
@@ -49,7 +51,7 @@ export function SiteHeader() {
           ))}
           <Link href="/consultation" className="sr-only">
             <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
-              Get started
+              Join Over 400+ learners
             </Button>
           </Link>
         </nav>
@@ -73,7 +75,7 @@ export function SiteHeader() {
                 ))}
                 <DropdownMenuItem asChild>
                   <Link href="/consultation" className="w-full">
-                    Get started
+                    Join Over 400+ learners
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
