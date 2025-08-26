@@ -27,7 +27,7 @@ export default function AboutPage() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Image
-                  src="https://images.unsplash.com/photo-1523240798131-1131d5f2b0c5?w=320&h=220&fit=crop&crop=center"
+                  src="https://best-ed.vercel.app/assets/img/education/index/IMG-20250519-WA0021.jpg"
                   alt="Collaborative learning session"
                   width={320}
                   height={220}
