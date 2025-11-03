@@ -51,10 +51,17 @@ const instructors: Instructor[] = [
 			linkedin: "https://linkedin.com/in/mansurakidah",
 			twitter: "#"
 		},
-		fullProfile: "Mansur Akidah is a certified Math instructor with a passion for making complex concepts simple. He has helped hundreds of students excel in national and international exams."
+		fullProfile: "Mansur Akidah is a Math instructor with a passion for making complex concepts simple. He has helped hundreds of students excel in national and international exams."
 	},
 	
 ]
+
+import { generateMetadata } from '@/lib/metadata'
+export const metadata = generateMetadata({
+  title: 'Meet Our Instructors',
+  description: 'Learn about our experienced educators and their expertise in languages, math, and science',
+  path: '/profiles',
+})
 
 export default function InstructorProfiles() {
 	const [selected, setSelected] = useState<Instructor | null>(null)
