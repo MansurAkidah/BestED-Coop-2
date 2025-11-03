@@ -112,3 +112,11 @@ export const consultationMetadata = generateMetadata({
   path: '/consultation',
   keywords: ['education consultation', 'enrollment', 'get started'],
 })
+
+// Profiles page
+export const profilesMetadata = generateMetadata({
+  title: 'Meet Our Instructors',
+  description: 'Learn about our experienced educators and their expertise in languages, math, and science.',
+  path: '/profiles',
+  keywords: ['instructors', 'teachers', 'education', 'expertise'],
+})

@@ -56,14 +56,10 @@ const instructors: Instructor[] = [
 	
 ]
 
-import { generateMetadata } from '@/lib/metadata'
+import { profilesMetadata } from '@/lib/metadata'
 import type { Metadata } from 'next'
 
-export const metadata : Metadata = generateMetadata({
-  title: 'Meet Our Instructors',
-  description: 'Learn about our experienced educators and their expertise in languages, math, and science',
-  path: '/profiles',
-})
+export const metadata : Metadata = profilesMetadata
 
 export default function InstructorProfiles() {
 	const [selected, setSelected] = useState<Instructor | null>(null)

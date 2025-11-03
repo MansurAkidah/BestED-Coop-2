@@ -6,11 +6,9 @@ import { Badge } from "@/components/ui/badge"
 import { Check, School, Landmark, Globe2 } from "lucide-react"
 import  LevelGrid from "./LevelGrid"
 
-export const metadata = {
-  title: "BestED Offerings | Languages, Math & Science, Exam Prep",
-  description:
-    "Personalized coaching for English, Kiswahili, German, French, Chinese, Dutch, plus Math and Science. CEFR A1–C2, exam pathways, and flexible delivery.",
-}
+import { servicesMetadata } from '@/lib/metadata'
+import type { Metadata } from 'next'
+export const metadata : Metadata = servicesMetadata
 
 const languages = [
   {

@@ -3,7 +3,8 @@ import { SiteFooter } from "@/components/site-footer"
 import Image from "next/image"
 
 import { aboutMetadata } from '@/lib/metadata'
-export const metadata = aboutMetadata
+import type { Metadata } from 'next'
+export const metadata : Metadata = aboutMetadata
 
 export default function AboutPage() {
   return (
