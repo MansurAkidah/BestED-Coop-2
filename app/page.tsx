@@ -12,7 +12,7 @@ export const metadata = {
   description:
     "BestED delivers corporate-grade, individualized learning—on-site or online. Languages, Math, and Science, from foundational to advanced.",
   keywords:
-    "homeschooling, education, online learning, professional teaching, home education, personalized learning, curriculum, academic excellence",
+    "homeschooling, education, online learning, professional teaching, flexible homeschooling programs, home education, personalized learning, curriculum, academic excellence",
 }
 
 export default function Page() {
