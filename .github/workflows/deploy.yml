@@ -1,0 +1,41 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main  # Change to 'master' if that's your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Droplet
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            # Navigate to your project directory
+            cd /var/www/bested  # Update this path to match your project location
+            
+            # Pull latest changes from GitHub
+            git pull origin main  
+            
+            # Install dependencies (in case new packages were added)
+            npm install
+            
+            # Build the Next.js application
+            npm run build
+            
+            # Restart PM2 process
+            pm2 restart bested  # Update this to match your PM2 app name
+            
+            # Optional: Clear PM2 logs to save space
+            pm2 flush
+            
+            echo "Deployment completed successfully!"
