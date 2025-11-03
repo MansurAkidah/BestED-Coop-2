@@ -57,7 +57,9 @@ const instructors: Instructor[] = [
 ]
 
 import { generateMetadata } from '@/lib/metadata'
-export const metadata = generateMetadata({
+import type { Metadata } from 'next'
+
+export const metadata : Metadata = generateMetadata({
   title: 'Meet Our Instructors',
   description: 'Learn about our experienced educators and their expertise in languages, math, and science',
   path: '/profiles',

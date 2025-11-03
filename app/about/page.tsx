@@ -2,11 +2,8 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import Image from "next/image"
 
-export const metadata = {
-  title: "About BestED | Mission, Vision, Values",
-  description:
-    "BestED empowers individuals and families with personalized, corporate-grade learning—on-site or online.",
-}
+import { aboutMetadata } from '@/lib/metadata'
+export const metadata = aboutMetadata
 
 export default function AboutPage() {
   return (

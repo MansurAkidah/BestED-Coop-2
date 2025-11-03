@@ -8,7 +8,8 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 
 import { homeMetadata } from '@/lib/metadata'
-export const metadata = homeMetadata
+import type { Metadata } from 'next'
+export const metadata : Metadata = homeMetadata
 
 export default function Page() {
   return (
