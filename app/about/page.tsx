@@ -2,8 +2,41 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import Image from "next/image"
 
-import { aboutMetadata } from '@/lib/metadata'
-export const metadata  = aboutMetadata
+export const metadata = {
+  title: "About BestED | Mission, Vision, Values",
+  description:
+    "BestED empowers individuals and families with personalized, corporate-grade learning—on-site or online.",
+  keywords: ['education philosophy', 'teaching methodology'],
+  openGraph: {
+    title: "About BestED | Mission, Vision, Values",
+    description: "BestED empowers individuals and families with personalized, corporate-grade learning—on-site or online.",
+    url: "/about",
+    type: "website",
+  },
+  alternates: {
+    canonical: 'https://bested.co.ke',
+  }, 
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BestED',
+    description: "Personalized coaching for English, Kiswahili, German, French, Chinese, Dutch, plus Math and Science. CEFR A1–C2, exam pathways, and flexible delivery.",
+    images: ['https://bested.co.ke/og-image.jpg'],
+  },
+  
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  
+  category: 'education',
+}
 
 export default function AboutPage() {
   return (

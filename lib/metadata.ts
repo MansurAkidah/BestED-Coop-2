@@ -92,7 +92,7 @@ export const homeMetadata = generateMetadata({
 // About page
 export const aboutMetadata = generateMetadata({
   title: 'About Us',
-  description: 'Learn about BestED\'s mission to provide world-class homeschooling education in Kenya.',
+  description: 'Learn about BestED&rsquo;s mission to provide world-class homeschooling education in Kenya.',
   path: '/about',
   keywords: ['education philosophy', 'teaching methodology'],
 })

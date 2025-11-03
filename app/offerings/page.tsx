@@ -6,8 +6,34 @@ import { Badge } from "@/components/ui/badge"
 import { Check, School, Landmark, Globe2 } from "lucide-react"
 import  LevelGrid from "./LevelGrid"
 
-import { servicesMetadata } from '@/lib/metadata'
-export const metadata = servicesMetadata
+export const metadata = {
+  title: "BestED Offerings | Languages, Math & Science, Exam Prep",
+  description:
+    "Personalized coaching for English, Kiswahili, German, French, Chinese, Dutch, plus Math and Science. CEFR A1–C2, exam pathways, and flexible delivery.",
+  alternates: {
+    canonical: 'https://bested.co.ke',
+  }, 
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BestED',
+    description: "Personalized coaching for English, Kiswahili, German, French, Chinese, Dutch, plus Math and Science. CEFR A1–C2, exam pathways, and flexible delivery.",
+    images: ['https://bested.co.ke/og-image.jpg'],
+  },
+  
+  robots: {
+    index: true,
+    follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    
+    category: 'education',
+}
 
 const languages = [
   {

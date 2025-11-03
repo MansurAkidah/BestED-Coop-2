@@ -7,8 +7,36 @@ import { Users, Video, Globe, CheckCircle2 } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 
-import { homeMetadata } from '@/lib/metadata'
-export const metadata = homeMetadata
+export const metadata = {
+  title: "BestED | Experience Professional Homeschooling",
+  description:
+    "BestED delivers corporate-grade, individualized learning—on-site or online. Languages, Math, and Science, from foundational to advanced. Master Foreign Languages, Math, and Science from foundational to advanced levels.",
+  keywords:
+    "homeschooling, education, online learning, professional teaching, flexible homeschooling programs, home education, personalized learning, curriculum, academic excellence, 'STEM education', 'foreign languages', 'personalized education'",
+  alternates: {
+    canonical: 'https://bested.co.ke',
+  }, 
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BestED',
+    description: "Personalized coaching for English, Kiswahili, German, French, Chinese, Dutch, plus Math and Science. CEFR A1–C2, exam pathways, and flexible delivery.",
+    images: ['https://bested.co.ke/og-image.jpg'],
+  },
+  
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  
+  category: 'education',
+}
 
 export default function Page() {
   return (
