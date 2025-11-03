@@ -20,22 +20,33 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
+            set -e  # Exit on any error
             # Navigate to your project directory
             cd /var/www/bested
             
-            # Pull latest changes from GitHub
+            # Pull latest changes
             git pull origin main
             
-            # Install dependencies
-            npm ci  # Use ci for production deployments
+            # Try normal deployment first (fast)
+            echo "Attempting normal deployment..."
+            if npm install && npm run build; then
+              echo "Normal deployment successful!"
+            else
+              echo "Normal deployment failed, doing clean install..."
+              
+              # Fallback to clean install
+              npm cache clean --force
+              rm -rf node_modules package-lock.json
+              npm install
+              npm run build
+            fi
             
-            # Build the Next.js application
-            npm run build
-            
-            # Restart PM2 process (create if doesn't exist)
-            pm2 restart bested || pm2 start ecosystem.config.js
-            
-            # Optional: Clear PM2 logs to save space
+            # Restart PM2
             pm2 flush
+            pm2 stop bested || true
+            pm2 delete bested || true
+            pm2 start npm --name "bested" -- start
+            pm2 save
+            pm2 list
             
             echo "Deployment completed successfully!"
