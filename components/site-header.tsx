@@ -14,8 +14,7 @@ const nav = [
   { href: "/offerings", label: "What we offer" },
   { href: "/about", label: "About" },
   { href: "/consultation", label: "Book Consultation" },
-  { href: "/profiles", label: "Instructors" },
-  { href: "/contact", label: "Contact" }
+  { href: "/profiles", label: "Instructors" }
 ]
 
 export function SiteHeader() {

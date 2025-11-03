@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://bested.co.ke/sitemap.xml
+
+# Disallow admin and API routes
+# Disallow: /admin/
+# Disallow: /api/
+# Disallow: /_next/
+# Disallow: /_error
+# Disallow: /404
+
+# Allow all JavaScript and CSS files
+Allow: /*.js$
+Allow: /*.css$
+
+# Crawl-delay: 10  # Uncomment if you need to limit crawl rate

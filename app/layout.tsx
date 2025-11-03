@@ -10,7 +10,17 @@ export const metadata: Metadata = {
   description:
     "BestED delivers corporate-grade, individualized learning-on-site or online. Multiple Foreign Languages, Math, and Science, from foundational to advanced.",
   keywords:
-    "homeschooling, education, online learning, professional teaching, home education, personalized learning, curriculum, academic excellence",
+  "homeschooling, education, online learning, professional teaching, home education, personalized learning, curriculum, academic excellence",
+  openGraph: {
+    title: "BestED | Experience Professional Homeschooling",
+    description:
+    "BestED delivers corporate-grade, individualized learning-on-site or online. Multiple Foreign Languages, Math, and Science, from foundational to advanced.",
+    url: "https://bested.co.ke",
+    type: "website",
+  },
+  alternates: {
+    canonical: 'https://bested.co.ke' 
+  },
 }
 
 export default function RootLayout({

@@ -3,7 +3,7 @@ name: Deploy to DigitalOcean
 on:
   push:
     branches:
-      - main  # Change to 'master' if that's your default branch
+      - main  
 
 jobs:
   deploy:
@@ -20,22 +20,131 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
-            # Navigate to your project directory
-            cd /var/www/bested
+            set -e  # Exit if any command fails
             
-            # Pull latest changes from GitHub
+            PROJECT_DIR="/var/www/bested"
+            BACKUP_DIR="/var/www/backups/bested-$(date +%Y%m%d-%H%M%S)"
+            
+            cd $PROJECT_DIR
+            
+            echo "=== Starting Deployment ==="
+            
+            # Create backup directory
+            mkdir -p /var/www/backups
+            
+            # Backup current working state BEFORE doing anything
+            echo "Creating backup at $BACKUP_DIR..."
+            cp -r $PROJECT_DIR $BACKUP_DIR
+            
+            # Function to rollback on failure
+            rollback() {
+              echo "ERROR: Deployment failed! Rolling back..."
+              
+              # Stop any broken PM2 process
+              pm2 stop bested 2>/dev/null || true
+              pm2 delete bested 2>/dev/null || true
+              
+              # Restore from backup
+              echo "Restoring from backup: $BACKUP_DIR"
+              rm -rf $PROJECT_DIR/node_modules
+              rm -rf $PROJECT_DIR/.next
+              cp -r $BACKUP_DIR/node_modules $PROJECT_DIR/ 2>/dev/null || true
+              cp -r $BACKUP_DIR/.next $PROJECT_DIR/ 2>/dev/null || true
+              
+              # Restart with old working version
+              cd $PROJECT_DIR
+              pm2 start npm --name "bested" -- start
+              pm2 save
+              
+              echo "Rollback completed. Application restored to previous working state."
+              exit 1
+            }
+            
+            # Set trap to call rollback function on any error
+            trap rollback ERR
+            
+            # Pull latest changes
+            echo "Pulling latest code from GitHub..."
             git pull origin main
             
-            # Install dependencies
-            npm ci  # Use ci for production deployments
+            # Try normal deployment first (fast path)
+            echo "Attempting quick deployment..."
+            if npm install && npm run build; then
+              echo "✓ Quick deployment successful!"
+              
+              # Deployment succeeded, restart PM2
+              pm2 stop bested 2>/dev/null || true
+              pm2 delete bested 2>/dev/null || true
+              pm2 start npm --name "bested" -- start
+              pm2 save
+              
+              echo "✓ Application restarted successfully!"
+              
+            else
+              echo "Quick deployment failed, attempting clean install..."
+              
+              # Clean install path with safety checks
+              echo "Step 1: Cleaning npm cache..."
+              npm cache clean --force || {
+                echo "Failed to clean npm cache"
+                rollback
+              }
+              
+              echo "Step 2: Backing up package-lock.json..."
+              cp package-lock.json package-lock.json.bak 2>/dev/null || true
+              
+              echo "Step 3: Removing node_modules..."
+              rm -rf node_modules || {
+                echo "Failed to remove node_modules"
+                rollback
+              }
+              
+              echo "Step 4: Removing package-lock.json..."
+              rm -f package-lock.json || {
+                echo "Failed to remove package-lock.json"
+                rollback
+              }
+              
+              echo "Step 5: Fresh npm install..."
+              npm install || {
+                echo "Failed to install dependencies"
+                # Restore package-lock before rollback
+                mv package-lock.json.bak package-lock.json 2>/dev/null || true
+                rollback
+              }
+              
+              echo "Step 6: Building application..."
+              npm run build || {
+                echo "Failed to build application"
+                rollback
+              }
+              
+              echo "✓ Clean install successful!"
+              
+              # Restart PM2
+              pm2 stop bested 2>/dev/null || true
+              pm2 delete bested 2>/dev/null || true
+              pm2 start npm --name "bested" -- start
+              pm2 save
+              
+              echo "✓ Application restarted successfully!"
+            fi
             
-            # Build the Next.js application
-            npm run build
+            # Remove trap since we succeeded
+            trap - ERR
             
-            # Restart PM2 process (create if doesn't exist)
-            pm2 restart bested || pm2 start ecosystem.config.js
-            
-            # Optional: Clear PM2 logs to save space
-            pm2 flush
-            
-            echo "Deployment completed successfully!"
+            # Verify application is running
+            sleep 5
+            if pm2 list | grep -q "bested.*online"; then
+              echo "✓ Application is running and healthy!"
+              
+              # Clean up old backups (keep last 5)
+              echo "Cleaning up old backups..."
+              cd /var/www/backups
+              ls -t | tail -n +6 | xargs -r rm -rf
+              
+              echo "=== Deployment completed successfully! ==="
+            else
+              echo "Application failed health check!"
+              rollback
+            fi
