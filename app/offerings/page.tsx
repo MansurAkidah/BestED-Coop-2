@@ -7,8 +7,7 @@ import { Check, School, Landmark, Globe2 } from "lucide-react"
 import  LevelGrid from "./LevelGrid"
 
 import { servicesMetadata } from '@/lib/metadata'
-import type { Metadata } from 'next'
-export const metadata : Metadata = servicesMetadata
+export const metadata = servicesMetadata
 
 const languages = [
   {

@@ -1,7 +1,6 @@
-import type { Metadata } from "next"
 import { consultationMetadata } from '@/lib/metadata'
 
-export const metadata: Metadata = consultationMetadata
+export const metadata = consultationMetadata
 
 export default function ConsultationLayout({
   children,

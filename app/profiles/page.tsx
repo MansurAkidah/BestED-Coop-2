@@ -57,9 +57,8 @@ const instructors: Instructor[] = [
 ]
 
 import { profilesMetadata } from '@/lib/metadata'
-import type { Metadata } from 'next'
 
-export const metadata : Metadata = profilesMetadata
+export const metadata = profilesMetadata
 
 export default function InstructorProfiles() {
 	const [selected, setSelected] = useState<Instructor | null>(null)
