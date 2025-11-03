@@ -21,19 +21,19 @@ jobs:
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
             # Navigate to your project directory
-            cd /var/www/bested  # Update this path to match your project location
+            cd /var/www/bested
             
             # Pull latest changes from GitHub
-            git pull origin main  
+            git pull origin main
             
-            # Install dependencies (in case new packages were added)
-            npm install
+            # Install dependencies
+            npm ci  # Use ci for production deployments
             
             # Build the Next.js application
             npm run build
             
-            # Restart PM2 process
-            pm2 restart bested  # Update this to match your PM2 app name
+            # Restart PM2 process (create if doesn't exist)
+            pm2 restart bested || pm2 start ecosystem.config.js
             
             # Optional: Clear PM2 logs to save space
             pm2 flush
