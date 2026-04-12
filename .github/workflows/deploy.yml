@@ -1,6 +1,7 @@
 name: Deploy to DigitalOcean
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main  
@@ -53,7 +54,7 @@ jobs:
               
               # Restart with old working version
               cd $PROJECT_DIR
-              pm2 start npm --name "bested" -- start
+              PORT=7000 pm2 start npm --name "bested" -- start
               pm2 save
               
               echo "Rollback completed. Application restored to previous working state."
@@ -75,7 +76,7 @@ jobs:
               # Deployment succeeded, restart PM2
               pm2 stop bested 2>/dev/null || true
               pm2 delete bested 2>/dev/null || true
-              pm2 start npm --name "bested" -- start
+              PORT=7000 pm2 start npm --name "bested" -- start
               pm2 save
               
               echo "✓ Application restarted successfully!"
@@ -124,7 +125,7 @@ jobs:
               # Restart PM2
               pm2 stop bested 2>/dev/null || true
               pm2 delete bested 2>/dev/null || true
-              pm2 start npm --name "bested" -- start
+              PORT=7000 pm2 start npm --name "bested" -- start
               pm2 save
               
               echo "✓ Application restarted successfully!"
