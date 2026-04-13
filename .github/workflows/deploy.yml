@@ -39,7 +39,7 @@ jobs:
             
             # Function to rollback on failure
             rollback() {
-              echo "ERROR: Deployment failed! Rolling back..."
+              echo "ERROR: Deployment failed! Rolling back to previous working state..."
               
               # Stop any broken PM2 process
               pm2 stop bested 2>/dev/null || true
