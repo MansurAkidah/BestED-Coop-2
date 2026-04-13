@@ -1,0 +1,141 @@
+name: Setup BestED Droplet
+
+on:
+  workflow_dispatch:  # Manual trigger only
+  workflow_call:      # Called by deploy.yml when setup is missing
+
+permissions:
+  contents: read
+
+jobs:
+  setup-droplet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug SSH key
+        run: |
+          echo "Key length: $(echo '${{ secrets.DROPLET_SSH_KEY }}' | wc -c)"
+          echo "------"
+          echo "${{ secrets.DROPLET_SSH_KEY }}" | head -n 5
+          echo "user = ${{ secrets.DROPLET_BESTED_USER }}"
+        shell: bash
+
+      - name: Prepare Droplet (idempotent)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_BESTED_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            PROJECT_DIR="/var/www/bested"
+            BACKUP_BASE="/var/www/backups"
+            PROJECT_NAME="bested"
+            APP_PORT=7000
+
+            set -euo pipefail
+            echo "=== Starting droplet setup (idempotent) ==="
+
+            # Basic directories
+            echo "Creating basic directories..."
+            sudo mkdir -p "${PROJECT_DIR}" "${BACKUP_BASE}" "/var/log/${PROJECT_NAME}"
+
+            # Ensure correct owner (deploy user)
+            sudo chown -R $USER:$USER "${PROJECT_DIR}" "${BACKUP_BASE}"
+
+            # Install git if missing
+            if ! command -v git >/dev/null 2>&1; then
+              echo "Installing git..."
+              sudo apt-get update
+              sudo apt-get install -y git
+            else
+              echo "git already installed: $(git --version)"
+            fi
+
+            # Node (LTS) install if missing
+            if ! command -v node >/dev/null 2>&1; then
+              echo "Installing Node.js (LTS)..."
+              curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            else
+              echo "Node already installed: $(node -v)"
+            fi
+
+            # Nginx
+            if ! command -v nginx >/dev/null 2>&1; then
+              echo "Installing Nginx..."
+              sudo apt-get update
+              sudo apt-get install -y nginx
+              sudo systemctl enable nginx
+              sudo systemctl start nginx
+            else
+              echo "Nginx already installed: $(nginx -v 2>&1 | head -n1)"
+            fi
+
+            # Basic UFW rules (optional)
+            if command -v ufw >/dev/null 2>&1; then
+              sudo ufw allow OpenSSH || true
+              sudo ufw allow http || true
+              sudo ufw allow https || true
+              sudo ufw --force enable || true
+            fi
+
+            # Create nginx site config if it doesn't exist
+            NGINX_SITE="/etc/nginx/sites-available/${PROJECT_NAME}"
+            if [ ! -f "$NGINX_SITE" ]; then
+              echo "Creating nginx site config for ${PROJECT_NAME}..."
+              sudo tee "${NGINX_SITE}" > /dev/null << 'NGINXEOF'
+            server {
+                listen 80;
+                server_name bested.co.ke www.bested.co.ke;
+
+                # Frontend routes
+                location / {
+                    proxy_pass http://127.0.0.1:7000;
+                    proxy_http_version 1.1;
+                    proxy_set_header Host \$host;
+                    proxy_set_header X-Real-IP \$remote_addr;
+                    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+                    proxy_set_header Upgrade \$http_upgrade;
+                    proxy_set_header Connection 'upgrade';
+                    proxy_cache_bypass \$http_upgrade;
+                }
+            NGINXEOF
+              sudo ln -sf "${NGINX_SITE}" /etc/nginx/sites-enabled/${PROJECT_NAME}
+              sudo nginx -t
+              sudo systemctl reload nginx
+            else
+              echo "Nginx site config already exists, skipping."
+            fi
+
+            # Create systemd service unit if it doesn't exist
+            SERVICE_FILE="/etc/systemd/system/${PROJECT_NAME}.service"
+            if [ ! -f "$SERVICE_FILE" ]; then
+              echo "Creating systemd service: ${PROJECT_NAME}.service..."
+              NODE_BIN=$(which node)
+              sudo tee "${SERVICE_FILE}" > /dev/null << SERVICEEOF
+            [Unit]
+            Description=BestED Next.js Application
+            After=network.target
+
+            [Service]
+            Type=simple
+            User=$USER
+            WorkingDirectory=/var/www/bested
+            ExecStart=/var/www/bested/node_modules/.bin/next start
+            Restart=on-failure
+            RestartSec=5
+            StandardOutput=append:/var/log/bested/app.log
+            StandardError=append:/var/log/bested/error.log
+            Environment=NODE_ENV=production
+            Environment=PORT=7000
+
+            [Install]
+            WantedBy=multi-user.target
+            SERVICEEOF
+              sudo systemctl daemon-reload
+              sudo systemctl enable "${PROJECT_NAME}"
+              echo "BestED systemd service created and enabled."
+            else
+              echo "BestED systemd service already exists, skipping."
+            fi
+
+            echo "=== Droplet setup complete ==="
